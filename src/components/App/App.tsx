@@ -14,16 +14,7 @@ function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentMovie, setCurrentMovie] = useState<Movie>({
-    id: 0,
-    poster_path: '',
-    backdrop_path: '',
-    title: '',
-    overview: '',
-    release_date: '',
-    vote_average: 0,
-  });
+  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     if (!query) return;
@@ -54,15 +45,13 @@ function App() {
     setQuery(value);
   };
 
-  const handleChange = (id: number) => {
-    const movie = movies.find(m => m.id === id);
-    if (movie) {
-      setCurrentMovie(movie);
-      setIsModalOpen(true);
-    }
+  const handleChange = (movie: Movie) => {
+    setCurrentMovie(movie);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setCurrentMovie(null);
+  };
 
   return (
     <div className={styles.app}>
@@ -73,7 +62,7 @@ function App() {
       {movies.length > 0 && (
         <MovieGrid movies={movies} onSelect={handleChange} />
       )}
-      {isModalOpen && <MovieModal movie={currentMovie} onClose={closeModal} />}
+      {currentMovie && <MovieModal movie={currentMovie} onClose={closeModal} />}
     </div>
   );
 }
